@@ -108,3 +108,56 @@ class NoteListResource(Resource):
         except Exception as e:
             db.session.rollback()
             return {'error': str(e)}, 400
+
+class NoteResource(Resource):
+    def get(self, id):
+        if 'user_id' not in session:
+            return {'error': 'Unauthorized'}, 401
+
+        note = Note.query.get_or_404(id)
+        if note.user_id != session['user_id']:
+            return {'Error': 'Access not allowed'}, 401
+
+        return note_schema.dump(note), 200
+
+    def patch(self, id):
+        if 'user_id' not in session:
+            return {'Error': 'Unauthorized'}, 401
+
+        note = Note.query.get_or_404(id)
+        if note.user_id != session['user_id']:
+            return {'Error': 'Access not allowed'}, 401
+
+        data = request.get_json()
+        if not data:
+            return {'Error': 'No input data provided'}, 400
+
+        if 'title' in data:
+            note.title = data['title']
+        if 'content' in data:
+            note.content = data['content']
+
+        try:
+            db.session.commit()
+            return note_schema.dump(note), 200
+        except Exception as e:
+            db.session.rollback()
+            return {'Error': str(e)}, 400
+
+
+    def delete(self, id):
+        if 'user_id' not in session:
+            return {'error': 'Unauthorized'}, 401
+
+        note = Note.query.get_or_404(id)
+        if note.user_id != session['user_id']:
+            return {'error': 'Access not allowed'}, 401
+
+        try:
+            db.session.delete(note)
+            db.session.commit()
+            return {'message': 'Note deleted successfully'}, 200
+        except Exception as e:
+            db.session.rollback()
+            return {'Error': str(e)}, 400
+        
