@@ -60,3 +60,9 @@ class Login(Resource):
             return user_schema.dump(user), 201
         return {'Error': 'Invalid username or password'}, 400
 
+class Logout(Resource):
+    def post(self):
+        if 'user_id' in session:
+            session.pop('user_id')
+            return {'message': 'Logged out successfully'}, 200
+        return {'Error': 'unauthorized'}, 401
