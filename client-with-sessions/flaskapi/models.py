@@ -33,3 +33,15 @@ class Note(db.Model):
     title = db.Column(db.String(150), nullable=False)
     content = db.Column(db.Text, nullable=False)
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
+
+
+class UserSchema(Schema):
+    id = fields.Int(dump_only=True)
+    username = fields.Str(required=True)
+    email = fields.Str(required=True)
+
+class NoteSchema(Schema):
+    id = fields.Int(dump_only=True)
+    title = fields.Str(required=True)
+    content = fields.Str(required=True)
+    user_id = fields.Int(dump_only=True)
