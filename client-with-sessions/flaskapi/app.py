@@ -1,6 +1,14 @@
-from flask import Flask
+from flask import Flask, request
 
 app = Flask(__name__)
+
+@app.route("/login", methods=["POST"])
+def login():
+    data = request.get_json()
+    username = data.get("username")
+    password = data.get("password")
+
+    
 
 @app.route("/<resource>", methods=["GET"])
 def resource_get(resource):
