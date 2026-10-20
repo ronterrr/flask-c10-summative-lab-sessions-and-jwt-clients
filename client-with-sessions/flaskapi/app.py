@@ -160,4 +160,14 @@ class NoteResource(Resource):
         except Exception as e:
             db.session.rollback()
             return {'Error': str(e)}, 400
-        
+
+api.add_resource(Signup, '/signup')
+api.add_resource(Login, '/login')
+api.add_resource(Logout, '/logout')
+api.add_resource(NoteListResource, '/notes')
+api.add_resource(NoteResource, '/notes/<id>')
+
+
+if __name__ == "__main__":
+    app.run(debug=True)
+         
